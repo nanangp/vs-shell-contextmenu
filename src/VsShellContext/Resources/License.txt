@@ -1,16 +1,21 @@
-﻿Buy it, use it, break it, fix it
-Trash it, change it, mail - upgrade it
-Charge it, point it, zoom it, press it
-Snap it, work it, quick - erase it
-Write it, cut it, paste it, save it
-Load it, check it, quick - rewrite it
-Plug it, play it, burn it, rip it
-Drag and drop it, zip - unzip it
-Lock it, fill it, call it, find it
-View it, code it, jam - unlock it
-Surf it, scroll it, pause it, click it
-Cross it, crack it, switch - update it
-Name it, rate it, tune it, print it
-Scan it, send it, fax - rename it
-Touch it, bring it, Pay it, watch it
-Turn it, leave it, start - format it
+MIT License
+
+Copyright (c) 2020 Nanang Prasetyo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

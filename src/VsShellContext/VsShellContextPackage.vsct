@@ -20,9 +20,6 @@
   <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h" />
 
-  <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
-  <!--<Extern href="msobtnid.h" xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" />-->
-
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidVsShellContextPkg">
@@ -33,14 +30,12 @@
     called "command set" and is used to group different command inside a logically related  
     group; your package should define its own command set in order to avoid collisions  
     with command ids defined by other packages. -->
-
     
     <!-- In this section you can define new menu groups. A menu group is a container for 
          other menus or buttons (commands); from a visual point of view you can see the 
          group as the part of a menu contained between two lines. The parent of a group 
          must be a menu. -->
     <Groups>
-
       <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
       </Group>
@@ -49,6 +44,39 @@
       </Group>
       <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_BASIC" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_HTML" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_SCRIPT" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASPX" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASAX" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASPX_CODE" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASAX_CODE" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASMX_CODE" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="CssEditorWindows" id="IDMX_HTM_SOURCE_CSS" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="XamlEditorWindows" id="IDMX_XAML_SOURCE_BASIC" />
+      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="CshtmlEditorWindows" id="IDM_HTMLCTXMENU" />
       </Group>
     </Groups>
     
@@ -76,16 +104,12 @@
    
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
-      <!--  The bitmap id is defined in a way that is a little bit different from the others: 
-            the declaration starts with a guid for the bitmap strip, then there is the resource id of the 
-            bitmap strip containing the bitmaps and then there are the numeric ids of the elements used 
-            inside a button definition. An important aspect of this declaration is that the element id 
-            must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
   		<Bitmap guid="guidIcon" href="Resources\Icon.ico" />
     </Bitmaps>
 
   </Commands>
 
+  <!-- Binds command to shortcut key -->
   <KeyBindings>
     <KeyBinding guid="guidVsShellContextCmdSet" id="cmdShellContextMenu" editor="guidVSStd97" mod1="Control" key1="e" mod2="Control" key2="x" />
   </KeyBindings>
@@ -96,12 +120,36 @@
     
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidVsShellContextCmdSet" value="{a799b2b9-9c74-404e-a504-53ed1caf2e61}">
-
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdShellContextMenu" value="0x0100" />
     </GuidSymbol>
 
-	  <GuidSymbol name="guidIcon" value="{96386C5C-C048-4477-86F2-F5050B38DAAD}">
+    <!-- These are the IDs for the various HTML style editors that VS uses. Thanks to the CodeStash extension for this list-->
+    <GuidSymbol name="HtmlEditorWindows" value="{D7E8C5E1-BDB8-11D0-9C88-0000F8040A53}">
+      <IDSymbol name="IDMX_HTM_SOURCE_BASIC" value="0x32" />
+      <IDSymbol name="IDMX_HTM_SOURCE_HTML" value="0x33" />
+      <IDSymbol name="IDMX_HTM_SOURCE_SCRIPT" value="0x34" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASPX" value="0x35" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASAX" value="0x3B" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASPX_CODE" value="0x36" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASAX_CODE" value="0x3C" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASPX_CODE_VB" value="0x37" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASAX_CODE_VB" value="0x3D" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASMX_CODE" value="0x38" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASMX_CODE_VB" value="0x39" />
+    </GuidSymbol>
+    <GuidSymbol name="CssEditorWindows" value="{A764E896-518D-11D2-9A89-00C04F79EFC3}">
+      <IDSymbol name="IDMX_HTM_SOURCE_CSS" value="0x0102"/>
+    </GuidSymbol>
+    <GuidSymbol name="XamlEditorWindows" value="{4C87B692-1202-46AA-B64C-EF01FAEC53DA}">
+      <IDSymbol name="IDMX_XAML_SOURCE_BASIC" value="0x0103"/>
+    </GuidSymbol>
+    <GuidSymbol name="CshtmlEditorWindows" value="{78F03954-2FB8-4087-8CE7-59D71710B3BB}">
+      <IDSymbol name="IDM_HTMLCTXMENU" value="0x0001"/>
+    </GuidSymbol>
+    
+    <!-- Guid for the icons -->
+    <GuidSymbol name="guidIcon" value="{96386C5C-C048-4477-86F2-F5050B38DAAD}">
 		  <IDSymbol name="main" value="1" />
 	  </GuidSymbol>
     

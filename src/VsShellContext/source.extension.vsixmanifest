@@ -1,49 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="985f5dc4-11c5-497e-bd9d-a84a2ddc7816">
-    <Name>Shell Context Menu</Name>
-    <Author>Outstance</Author>
-    <Version>2.0</Version>
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity
+      Id="VsShellContextMenu.985f5dc4-11c5-497e-bd9d-a84a2ddc7816"
+      Version="1.9"
+      Language="en-US"
+      Publisher="Nanang Prasetyo"
+     />
+    <DisplayName>Shell Context Menu</DisplayName>
     <Description xml:space="preserve">Visual Studio Shell Context Menu</Description>
-    <Locale>1033</Locale>
-    <InstalledByMsi>false</InstalledByMsi>
-    <License>Resources\License.txt</License>
+    <License>Resources\LICENSE.txt</License>
     <Icon>Resources\Icon.ico</Icon>
     <PreviewImage>Resources\Preview.png</PreviewImage>
-    <SupportedProducts>
-      <VisualStudio Version="11.0">
-        <!--<Edition>Ultimate</Edition>
-        <Edition>Premium</Edition>
-        <Edition>Pro</Edition>-->
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-      <VisualStudio Version="12.0">
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-      <VisualStudio Version="13.0">
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-      <VisualStudio Version="14.0">
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-      <VisualStudio Version="15.0">
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-      <VisualStudio Version="16.0">
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-      <VisualStudio Version="17.0">
-        <Edition>IntegratedShell</Edition>
-      </VisualStudio>
-    </SupportedProducts>
-    <SupportedFrameworkRuntimeEdition MinVersion="4.5" MaxVersion="4.9" />
-  </Identifier>
-  <References>
-    <Reference Id="Microsoft.VisualStudio.MPF" MinVersion="10.0">
-      <Name>Visual Studio MPF</Name>
-    </Reference>
-  </References>
-  <Content>
-    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
-  </Content>
-</Vsix>
+    <Preview>true</Preview>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.IntegratedShell" Version="[11.0, 17.0)" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[11.0,17.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
+</PackageManifest>

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -14,22 +13,17 @@ namespace Outstance.VsShellContext
         {
             if (toWrite == null)
                 return;
-            
             if (_outWindow == null)
                 _outWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
             string customTitle = "VS Shell Context";
             _outWindow.CreatePane(ref _customGuid, customTitle, 1, 1);
-            
-            IVsOutputWindowPane pane;
-            _outWindow.GetPane(ref _customGuid, out pane);
+            _outWindow.GetPane(ref _customGuid, out var pane);
 
             pane.OutputString(toWrite.ToString());
             pane.OutputString(Environment.NewLine);
             if (openWindow)
                 pane.Activate();
         }
-        
-        
     }
 }

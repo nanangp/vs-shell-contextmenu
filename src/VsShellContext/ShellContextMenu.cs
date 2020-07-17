@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 
 namespace Outstance.VsShellContext
 {
@@ -22,7 +23,7 @@ namespace Outstance.VsShellContext
     /// 
     /// Hooking class taken from MSDN Magazine Cutting Edge column
     /// http://msdn.microsoft.com/msdnmag/issues/02/10/CuttingEdge/
-    /// Now here:
+    /// Now (as at 2020) available here:
     /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2002/october/cutting-edge-windows-hooks-in-the-net-framework
     /// 
     /// Andreas Johansson
@@ -37,13 +38,13 @@ namespace Outstance.VsShellContext
     /// </example>
     public class ShellContextMenu : NativeWindow, IDisposable
     {
-        #region Constructor
+        #region Methods
+
         /// <summary>Default constructor</summary>
         public ShellContextMenu()
         {
             this.CreateHandle(new CreateParams());
         }
-        #endregion
 
         /// <summary>Ensure all resources get released</summary>
         public void Dispose()
@@ -51,7 +52,6 @@ namespace Outstance.VsShellContext
             ReleaseAll();
         }
 
-        #region GetContextMenuInterfaces()
         /// <summary>Gets the interfaces to the context menu</summary>
         /// <param name="oParentFolder">Parent folder</param>
         /// <param name="arrPIDLs">PIDLs</param>
@@ -79,9 +79,7 @@ namespace Outstance.VsShellContext
                 return false;
             }
         }
-        #endregion
 
-        #region Override
 
         /// <summary>
         /// This method receives WindowMessages. It will make the "Open With" and "Send To" work 
@@ -140,9 +138,7 @@ namespace Outstance.VsShellContext
             base.WndProc(ref m);
         }
 
-        #endregion
 
-        #region InvokeCommand
         private void InvokeCommand(IContextMenu oContextMenu, uint nCmd, string strFolder, Point pointInvoke)
         {
             CMINVOKECOMMANDINFOEX invoke = new CMINVOKECOMMANDINFOEX();
@@ -159,9 +155,7 @@ namespace Outstance.VsShellContext
 
             oContextMenu.InvokeCommand(ref invoke);
         }
-        #endregion
 
-        #region ReleaseAll()
         /// <summary>
         /// Release all allocated interfaces, PIDLs 
         /// </summary>
@@ -198,9 +192,7 @@ namespace Outstance.VsShellContext
                 _arrPIDLs = null;
             }
         }
-        #endregion
 
-        #region GetDesktopFolder()
         /// <summary>
         /// Gets the desktop folder
         /// </summary>
@@ -222,9 +214,7 @@ namespace Outstance.VsShellContext
 
             return _oDesktopFolder;
         }
-        #endregion
 
-        #region GetParentFolder()
         /// <summary>
         /// Gets the parent folder
         /// </summary>
@@ -273,36 +263,29 @@ namespace Outstance.VsShellContext
 
             return _oParentFolder;
         }
-        #endregion
 
-        #region GetPIDLs()
         /// <summary>
-        /// Get the PIDLs
+        /// Get PIDLs for the specified list of Files or Directories.
         /// </summary>
-        /// <param name="arrFI">Array of FileInfo</param>
+        /// <param name="files">A list of either FileInfo or DirectoryInfo</param>
         /// <returns>Array of PIDLs</returns>
-        protected IntPtr[] GetPIDLs(FileInfo[] arrFI)
+        protected IntPtr[] GetPIDLs(IEnumerable<FileSystemInfo> files)
         {
-            if (null == arrFI || 0 == arrFI.Length)
-            {
+            if (null == files || !files.Any())
                 return null;
-            }
-
-            IShellFolder oParentFolder = GetParentFolder(arrFI[0].DirectoryName);
+            
+            var oParentFolder = GetParentFolder(Directory.GetParent(files.First().FullName).FullName);
             if (null == oParentFolder)
-            {
                 return null;
-            }
 
-            IntPtr[] arrPIDLs = new IntPtr[arrFI.Length];
+            IntPtr[] arrPIDLs = new IntPtr[files.Count()];
             int n = 0;
-            foreach (FileInfo fi in arrFI)
+            foreach (var fi in files)
             {
                 // Get the file relative to folder
                 uint pchEaten = 0;
                 SFGAO pdwAttributes = 0;
-                IntPtr pPIDL = IntPtr.Zero;
-                int nResult = oParentFolder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, fi.Name, ref pchEaten, out pPIDL, ref pdwAttributes);
+                int nResult = oParentFolder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, fi.Name, ref pchEaten, out IntPtr pPIDL, ref pdwAttributes);
                 if (S_OK != nResult)
                 {
                     FreePIDLs(arrPIDLs);
@@ -315,47 +298,6 @@ namespace Outstance.VsShellContext
             return arrPIDLs;
         }
 
-        /// <summary>
-        /// Get the PIDLs
-        /// </summary>
-        /// <param name="arrFI">Array of DirectoryInfo</param>
-        /// <returns>Array of PIDLs</returns>
-        protected IntPtr[] GetPIDLs(DirectoryInfo[] arrFI)
-        {
-            if (null == arrFI || 0 == arrFI.Length)
-            {
-                return null;
-            }
-
-            IShellFolder oParentFolder = GetParentFolder(arrFI[0].Parent.FullName);
-            if (null == oParentFolder)
-            {
-                return null;
-            }
-
-            IntPtr[] arrPIDLs = new IntPtr[arrFI.Length];
-            int n = 0;
-            foreach (DirectoryInfo fi in arrFI)
-            {
-                // Get the file relative to folder
-                uint pchEaten = 0;
-                SFGAO pdwAttributes = 0;
-                IntPtr pPIDL = IntPtr.Zero;
-                int nResult = oParentFolder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, fi.Name, ref pchEaten, out pPIDL, ref pdwAttributes);
-                if (S_OK != nResult)
-                {
-                    FreePIDLs(arrPIDLs);
-                    return null;
-                }
-                arrPIDLs[n] = pPIDL;
-                n++;
-            }
-
-            return arrPIDLs;
-        }
-        #endregion
-
-        #region FreePIDLs()
         /// <summary>
         /// Free the PIDLs
         /// </summary>
@@ -374,74 +316,13 @@ namespace Outstance.VsShellContext
                 }
             }
         }
-        #endregion
-
-        #region InvokeContextMenuDefault
-        private void InvokeContextMenuDefault(FileInfo[] arrFI)
-        {
-            // Release all resources first.
-            ReleaseAll();
-
-            IntPtr pMenu = IntPtr.Zero,
-                iContextMenuPtr = IntPtr.Zero;
-
-            try
-            {
-                _arrPIDLs = GetPIDLs(arrFI);
-                if (null == _arrPIDLs)
-                {
-                    ReleaseAll();
-                    return;
-                }
-
-                if (false == GetContextMenuInterfaces(_oParentFolder, _arrPIDLs, out iContextMenuPtr))
-                {
-                    ReleaseAll();
-                    return;
-                }
-
-                pMenu = CreatePopupMenu();
-
-                int nResult = _oContextMenu.QueryContextMenu(
-                    pMenu,
-                    0,
-                    CMD_FIRST,
-                    CMD_LAST,
-                    CMF.DEFAULTONLY |
-                    ((Control.ModifierKeys & Keys.Shift) != 0 ? CMF.EXTENDEDVERBS : 0));
-
-                uint nDefaultCmd = (uint)GetMenuDefaultItem(pMenu, false, 0);
-                if (nDefaultCmd >= CMD_FIRST)
-                {
-                    InvokeCommand(_oContextMenu, nDefaultCmd, arrFI[0].DirectoryName, Control.MousePosition);
-                }
-
-                DestroyMenu(pMenu);
-                pMenu = IntPtr.Zero;
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                if (pMenu != IntPtr.Zero)
-                {
-                    DestroyMenu(pMenu);
-                }
-                ReleaseAll();
-            }
-        }
-        #endregion
-
-        #region ShowContextMenu()
 
         /// <summary>
         /// Shows the context menu
         /// </summary>
-        /// <param name="files">FileInfos (should all be in same directory)</param>
+        /// <param name="files">FileInfos/DirectoryInfos (should all be in same directory)</param>
         /// <param name="pointScreen">Where to show the menu</param>
-        public void ShowContextMenu(FileInfo[] files, Point pointScreen)
+        public void ShowContextMenu(IEnumerable<FileSystemInfo> files, Point pointScreen)
         {
             // Release all resources first.
             ReleaseAll();
@@ -452,20 +333,6 @@ namespace Outstance.VsShellContext
         /// <summary>
         /// Shows the context menu
         /// </summary>
-        /// <param name="dirs">DirectoryInfos (should all be in same directory)</param>
-        /// <param name="pointScreen">Where to show the menu</param>
-        public void ShowContextMenu(DirectoryInfo[] dirs, Point pointScreen)
-        {
-            // Release all resources first.
-            ReleaseAll();
-            _arrPIDLs = GetPIDLs(dirs);
-            this.ShowContextMenu(pointScreen);
-        }
-
-        /// <summary>
-        /// Shows the context menu
-        /// </summary>
-        /// <param name="arrFI">FileInfos (should all be in same directory)</param>
         /// <param name="pointScreen">Where to show the menu</param>
         private void ShowContextMenu(Point pointScreen)
         {
@@ -477,31 +344,29 @@ namespace Outstance.VsShellContext
             try
             {
                 if (null == _arrPIDLs)
-                {
-                    ReleaseAll();
-                    return;
-                }
+                    return; // cleanup performed by the finally block
 
                 if (false == GetContextMenuInterfaces(_oParentFolder, _arrPIDLs, out iContextMenuPtr))
-                {
-                    ReleaseAll();
-                    return;
-                }
+                    return; // cleanup performed by the finally block
 
                 pMenu = CreatePopupMenu();
 
                 try
                 {
-                int nResult = _oContextMenu.QueryContextMenu(
-                    pMenu,
-                    0,
-                    CMD_FIRST,
-                    CMD_LAST,
-                    CMF.EXPLORE |
-                    CMF.NORMAL |
-                    ((Control.ModifierKeys & Keys.Shift) != 0 ? CMF.EXTENDEDVERBS : 0));
-                }catch(Exception ex)
+                    int nResult = _oContextMenu.QueryContextMenu(
+                        pMenu,
+                        0,
+                        CMD_FIRST,
+                        CMD_LAST,
+                        CMF.EXPLORE
+                        | CMF.NORMAL 
+                        | CMF.EXTENDEDVERBS
+                        //| CMF.DEFAULTONLY
+                        );
+                }
+                catch
                 {
+                    // This is a known recurring hotspot for exceptions. Log and re-throw.
                     OutputWindow.Log(string.Format(
                         "_oContextMenu={0}\npMenu={1}\n_arrPIDLs={2}\n_oParentFolder={3}",
                         _oContextMenu, 
@@ -533,10 +398,6 @@ namespace Outstance.VsShellContext
                     InvokeCommand(_oContextMenu, nSelected, _strParentFolder, pointScreen);
                 }
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 //hook.Uninstall();
@@ -557,9 +418,10 @@ namespace Outstance.VsShellContext
                 ReleaseAll();
             }
         }
+
         #endregion
 
-        #region Local variabled
+        #region Fields
         private IContextMenu _oContextMenu;
         private IContextMenu2 _oContextMenu2;
         private IContextMenu3 _oContextMenu3;
@@ -569,7 +431,7 @@ namespace Outstance.VsShellContext
         private string _strParentFolder;
         #endregion
 
-        #region Variables and Constants
+        #region Constants
 
         private const int MAX_PATH = 260;
         private const uint CMD_FIRST = 1;
@@ -578,8 +440,8 @@ namespace Outstance.VsShellContext
         private const int S_OK = 0;
         private const int S_FALSE = 1;
 
-        private static int cbMenuItemInfo = Marshal.SizeOf(typeof(MENUITEMINFO));
-        private static int cbInvokeCommand = Marshal.SizeOf(typeof(CMINVOKECOMMANDINFOEX));
+        private static readonly int cbMenuItemInfo = Marshal.SizeOf(typeof(MENUITEMINFO));
+        private static readonly int cbInvokeCommand = Marshal.SizeOf(typeof(CMINVOKECOMMANDINFOEX));
 
         #endregion
 
