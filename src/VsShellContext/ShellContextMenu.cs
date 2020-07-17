@@ -22,6 +22,8 @@ namespace Outstance.VsShellContext
     /// 
     /// Hooking class taken from MSDN Magazine Cutting Edge column
     /// http://msdn.microsoft.com/msdnmag/issues/02/10/CuttingEdge/
+    /// Now here:
+    /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2002/october/cutting-edge-windows-hooks-in-the-net-framework
     /// 
     /// Andreas Johansson
     /// afjohansson@hotmail.com
@@ -1573,10 +1575,10 @@ namespace Outstance.VsShellContext
         /// <returns>The unsigned integer for the High Word</returns>
         public static uint HiWord(IntPtr ptr)
         {
-            if (((uint)ptr & 0x80000000) == 0x80000000)
-                return ((uint)ptr >> 16);
+            if ((ptr.ToInt64() & 0x80000000) == 0x80000000)
+                return (uint)(ptr.ToInt64() >> 16);
             else
-                return ((uint)ptr >> 16) & 0xffff;
+                return (uint)((ptr.ToInt64() >> 16) & 0xffff);
         }
 
         /// <summary>
@@ -1586,7 +1588,7 @@ namespace Outstance.VsShellContext
         /// <returns>The unsigned integer for the Low Word</returns>
         public static uint LoWord(IntPtr ptr)
         {
-            return (uint)ptr & 0xffff;
+            return (uint)(ptr.ToInt64() & 0xffff);
         }
 
         #endregion

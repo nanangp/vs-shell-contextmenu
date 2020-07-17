@@ -21,8 +21,9 @@ namespace ContextTestApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var di = new DirectoryInfo(Environment.CurrentDirectory);
-            var fileInfos = di.EnumerateFiles();
+            var di = new DirectoryInfo(@"C:\");//Environment.CurrentDirectory);
+            
+            var fileInfos = di.EnumerateDirectories().Cast<FileSystemInfo>().Union(di.EnumerateFiles());
             foreach (var fi in fileInfos)
                 lvFiles.Items.Add(fi.FullName);
         }
