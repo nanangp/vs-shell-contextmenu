@@ -23,8 +23,8 @@ namespace Outstance.VsShellContext
         public static readonly Guid CommandSet = new Guid("a799b2b9-9c74-404e-a504-53ed1caf2e61");
 
 
-        private readonly IVsMonitorSelection _selectionSvc;
-        private readonly EnvDTE.DTE _dteSvc;
+        private readonly IVsMonitorSelection selectionSvc;
+        private readonly EnvDTE.DTE dteSvc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellContextCommand"/> class.
@@ -35,8 +35,8 @@ namespace Outstance.VsShellContext
             IVsMonitorSelection selectionSvc,
             EnvDTE.DTE dteSvc)
         {
-            _selectionSvc = selectionSvc ?? throw new ArgumentNullException(nameof(selectionSvc));
-            _dteSvc = dteSvc ?? throw new ArgumentNullException(nameof(dteSvc));
+            this.selectionSvc = selectionSvc ?? throw new ArgumentNullException(nameof(selectionSvc));
+            this.dteSvc = dteSvc ?? throw new ArgumentNullException(nameof(dteSvc));
             commandSvc = commandSvc ?? throw new ArgumentNullException(nameof(commandSvc));
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
@@ -48,7 +48,7 @@ namespace Outstance.VsShellContext
         /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
-        public static void Initialize(Package package)
+        public static void Initialize(Package _)
         {
         }
 
@@ -66,7 +66,11 @@ namespace Outstance.VsShellContext
                 OutputWindow.Log(string.Join(",", files));
                 using (var c = new ShellContextMenu())
                 {
-                    c.ShowContextMenu(files.Select(f => new FileInfo(f)), System.Windows.Forms.Cursor.Position);
+                    var selectedItems = files.Select(f => 
+                        Directory.Exists(f) 
+                        ? new DirectoryInfo(f) 
+                        : new FileInfo(f) as FileSystemInfo);
+                    c.ShowContextMenu(selectedItems, System.Windows.Forms.Cursor.Position);
                 }
             }
             catch (Exception ex)
@@ -76,7 +80,7 @@ namespace Outstance.VsShellContext
         }
 
         /// <summary>
-        /// Check where we are being called from, then return the relevant file.
+        /// Check where we are being called from, then return the relevant file(s).
         /// If an editor window, return the single active doc. 
         /// Otherwise, the solution explorer may have multiple selections.
         /// </summary>
@@ -85,7 +89,7 @@ namespace Outstance.VsShellContext
             var winType = GetActiveWindowType();
             if (winType == WindowType.DocumentEditor)
             {
-                var doc = _dteSvc.ActiveDocument;
+                var doc = this.dteSvc.ActiveDocument;
                 if (doc != null)
                     yield return doc.FullName;
             }
@@ -97,21 +101,23 @@ namespace Outstance.VsShellContext
         }
 
         /// <summary>
-        /// 
+        /// Attempt to figure out where the action is triggered from. 
+        /// So far the only possible trigger points are the Solution Explorer,
+        /// or from the source code editor.
         /// </summary>
         private WindowType GetActiveWindowType()
         {
-            _selectionSvc.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_WindowFrame, out var element);
+            _ = this.selectionSvc.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_WindowFrame, out var element);
             if (!(element is IVsWindowFrame window))
                 return WindowType.Unknown;
 
             // Using VSFPROPID_Type we could quickly identify if it's a Document Frame (1), or a Tool Window (2)
-            window.GetProperty((int)__VSFPROPID.VSFPROPID_Type, out var windowFrameType);
+            _ = window.GetProperty((int)__VSFPROPID.VSFPROPID_Type, out var windowFrameType);
             if ((int)windowFrameType == DocumentFrame)
                 return WindowType.DocumentEditor;
 
             // Well it's not the editor. Now check by guid to see what it is.
-            window.GetGuidProperty((int)__VSFPROPID.VSFPROPID_GuidPersistenceSlot, out var windowTypeGuid);
+            _ = window.GetGuidProperty((int)__VSFPROPID.VSFPROPID_GuidPersistenceSlot, out var windowTypeGuid);
 
             if (windowTypeGuid.Equals(SolutionExplorerGuid))
                 return WindowType.SolutionExplorer;
@@ -124,17 +130,16 @@ namespace Outstance.VsShellContext
         }
 
         /// <summary>
-        /// 
+        /// Depending on where the item lives in the Solution Explorer, they may come 
+        /// in as different types. This methods attempt to decode that into file names
+        /// and their full paths.
         /// </summary>
-        /// <returns></returns>
         private IEnumerable<string> PopulateFileNamesFromSolutionExplorer()
         {
-            // TODO: (NP) Better null validation. For now just let them bubble up as exception.
-            var uiH = (EnvDTE.UIHierarchy)_dteSvc.Windows?.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer)?.Object;
+            var uiH = (EnvDTE.UIHierarchy)this.dteSvc.Windows?.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer)?.Object;
             var selItems = uiH?.SelectedItems as Array;
 
-            var selHierarchyItems = selItems.Cast<EnvDTE.UIHierarchyItem>();
-            foreach (var hierarchyItem in selHierarchyItems)
+            foreach (var hierarchyItem in selItems.Cast<EnvDTE.UIHierarchyItem>())
             {
                 // Top-level project. See below for projects in folders.
                 if (hierarchyItem.Object is EnvDTE.Project project)
@@ -145,12 +150,29 @@ namespace Outstance.VsShellContext
 
                 if (hierarchyItem.Object is EnvDTE.ProjectItem projectItem)
                 {
-                    // Somehow, projects inside a Solution Folder (i.e. "virtual" folder) gets wrapped inside another project item..
                     if (projectItem.Object is EnvDTE.Project p)
+                    {
+                        // Somehow, projects inside a Solution Folder (i.e. "virtual" folder) 
+                        // sometimes get wrapped inside another project item. 
+                        // At least they were in VS2015, but not reproducible in 2019.
                         yield return p.FullName;
-                    else //This is a normal file.
+                    }
+                    else if (projectItem.Kind == EnvDTE.Constants.vsProjectItemKindSolutionItems)
+                    {
+                        // Normal files inside a solution folder is of a special "Kind", 
+                        // and doesn't have path information, but they should be in the
+                        // top-level Solution folder itself.
+                        var slnDir = Path.GetDirectoryName(this.dteSvc.Solution.Properties.Item("Path")?.Value?.ToString());
+                        if (slnDir is null)
+                            continue;
+                        yield return Path.Combine(slnDir, projectItem.Name);
+                    }
+                    else
+                    {
+                        // Oh look, a normal file! (or something else completely unknown, 
+                        // but hopefully it would throw the appropriate exception)
                         yield return projectItem.Properties.Item("FullPath")?.Value?.ToString();
-                    continue;
+                    }
                 }
             }
         }

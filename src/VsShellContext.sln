@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.30310.162
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsShellContext", "VSShellContext\VsShellContext.csproj", "{500B0BD9-CC48-4350-AD7F-5E81B0EEDB0D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2B7028A3-0176-4B57-A06F-BD5E42BC6E7B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
