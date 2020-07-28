@@ -97,14 +97,11 @@ namespace Outstance.VsShellContext
                 ((int)ShellHelper.HiWord(m.WParam) & (int)MFT.SEPARATOR) == 0 &&
                 ((int)ShellHelper.HiWord(m.WParam) & (int)MFT.POPUP) == 0)
             {
-                string info = string.Empty;
-
-                if (ShellHelper.LoWord(m.WParam) == (int)CMD_CUSTOM.ExpandCollapse)
-                    info = "Expands or collapses the current selected item";
-                else
-                {
-                    info = "";
-                }
+                ////string info = string.Empty;
+                ////if (ShellHelper.LoWord(m.WParam) == (int)CMD_CUSTOM.ExpandCollapse)
+                ////    info = "Expands or collapses the current selected item";
+                ////else
+                ////    info = "";
             }
 
             #endregion
@@ -116,8 +113,7 @@ namespace Outstance.VsShellContext
                  m.Msg == (int)WM.MEASUREITEM ||
                  m.Msg == (int)WM.DRAWITEM))
             {
-                if (_oContextMenu2.HandleMenuMsg(
-                    (uint)m.Msg, m.WParam, m.LParam) == S_OK)
+                if(_oContextMenu2.HandleMenuMsg((uint)m.Msg, m.WParam, m.LParam) == S_OK)
                     return;
             }
 
@@ -128,8 +124,7 @@ namespace Outstance.VsShellContext
             if (_oContextMenu3 != null &&
                 m.Msg == (int)WM.MENUCHAR)
             {
-                if (_oContextMenu3.HandleMenuMsg2(
-                    (uint)m.Msg, m.WParam, m.LParam, IntPtr.Zero) == S_OK)
+                if (_oContextMenu3.HandleMenuMsg2((uint)m.Msg, m.WParam, m.LParam, IntPtr.Zero) == S_OK)
                     return;
             }
 
@@ -273,19 +268,20 @@ namespace Outstance.VsShellContext
         {
             if (null == files || !files.Any())
                 return null;
-            
-            var oParentFolder = GetParentFolder(Directory.GetParent(files.First().FullName).FullName);
+
+            var parentDir = new DirectoryInfo(files.First().FullName).Parent.FullName;
+            var oParentFolder = GetParentFolder(parentDir);
             if (null == oParentFolder)
                 return null;
 
-            IntPtr[] arrPIDLs = new IntPtr[files.Count()];
-            int n = 0;
+            var arrPIDLs = new IntPtr[files.Count()];
+            var n = 0;
             foreach (var fi in files)
             {
                 // Get the file relative to folder
                 uint pchEaten = 0;
                 SFGAO pdwAttributes = 0;
-                int nResult = oParentFolder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, fi.Name, ref pchEaten, out IntPtr pPIDL, ref pdwAttributes);
+                var nResult = oParentFolder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, fi.Name, ref pchEaten, out IntPtr pPIDL, ref pdwAttributes);
                 if (S_OK != nResult)
                 {
                     FreePIDLs(arrPIDLs);
@@ -359,7 +355,7 @@ namespace Outstance.VsShellContext
                         CMD_FIRST,
                         CMD_LAST,
                         CMF.EXPLORE
-                        | CMF.NORMAL 
+                        | CMF.NORMAL
                         | CMF.EXTENDEDVERBS
                         //| CMF.DEFAULTONLY
                         );
@@ -369,7 +365,7 @@ namespace Outstance.VsShellContext
                     // This is a known recurring hotspot for exceptions. Log and re-throw.
                     OutputWindow.Log(string.Format(
                         "_oContextMenu={0}\npMenu={1}\n_arrPIDLs={2}\n_oParentFolder={3}",
-                        _oContextMenu, 
+                        _oContextMenu,
                         pMenu,
                         string.Join(",", _arrPIDLs),
                         _oParentFolder
@@ -1040,7 +1036,7 @@ namespace Outstance.VsShellContext
             Int32 ParseDisplayName(
                 IntPtr hwnd,
                 IntPtr pbc,
-                [MarshalAs(UnmanagedType.LPWStr)] 
+                [MarshalAs(UnmanagedType.LPWStr)]
             string pszDisplayName,
                 ref uint pchEaten,
                 out IntPtr ppidl,
@@ -1135,7 +1131,7 @@ namespace Outstance.VsShellContext
             Int32 SetNameOf(
                 IntPtr hwnd,
                 IntPtr pidl,
-                [MarshalAs(UnmanagedType.LPWStr)] 
+                [MarshalAs(UnmanagedType.LPWStr)]
             string pszName,
                 SHGNO uFlags,
                 out IntPtr ppidlOut);
