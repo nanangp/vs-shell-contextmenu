@@ -81,6 +81,9 @@
       <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
         <Parent guid="CshtmlEditorWindows" id="IDM_HTMLCTXMENU" />
       </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+        <Parent guid="JSONEditorContextMenu" id="IDJSONEditorContextMenu" />
+      </Group>
     </Groups>
     
     <!--Buttons section. -->
@@ -107,7 +110,7 @@
    
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
-  		<Bitmap guid="guidIcon" href="Resources\Icon.ico" />
+      <Bitmap guid="guidIcon" href="Resources\Icon.ico" />
     </Bitmaps>
 
   </Commands>
@@ -150,11 +153,14 @@
     <GuidSymbol name="CshtmlEditorWindows" value="{78F03954-2FB8-4087-8CE7-59D71710B3BB}">
       <IDSymbol name="IDM_HTMLCTXMENU" value="0x0001"/>
     </GuidSymbol>
+    <GuidSymbol name="JSONEditorContextMenu" value="{F718CA06-CF4F-4A0C-9106-E79E9EE5E7CD}">
+      <IDSymbol name="IDJSONEditorContextMenu" value="0x03" />
+    </GuidSymbol>
     
     <!-- Guid for the icons -->
     <GuidSymbol name="guidIcon" value="{96386C5C-C048-4477-86F2-F5050B38DAAD}">
-		  <IDSymbol name="main" value="1" />
-	  </GuidSymbol>
+      <IDSymbol name="main" value="1" />
+    </GuidSymbol>
     
   </Symbols>
 

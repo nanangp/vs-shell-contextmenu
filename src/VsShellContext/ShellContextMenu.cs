@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
@@ -434,7 +433,7 @@ namespace Outstance.VsShellContext
         private const uint CMD_LAST = 30000;
 
         private const int S_OK = 0;
-        private const int S_FALSE = 1;
+        ////private const int S_FALSE = 1;
 
         private static readonly int cbMenuItemInfo = Marshal.SizeOf(typeof(MENUITEMINFO));
         private static readonly int cbInvokeCommand = Marshal.SizeOf(typeof(CMINVOKECOMMANDINFOEX));
@@ -1333,8 +1332,7 @@ namespace Outstance.VsShellContext
         public event HookEventHandler HookInvoked;
         protected void OnHookInvoked(HookEventArgs e)
         {
-            if (HookInvoked != null)
-                HookInvoked(this, e);
+            HookInvoked?.Invoke(this, e);
         }
         // ************************************************************************
 
