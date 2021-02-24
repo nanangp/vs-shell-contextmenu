@@ -1,12 +1,13 @@
-﻿using System;
-using System.ComponentModel.Design;
+﻿using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using static Outstance.VsShellContext.Constants;
-using Microsoft.VisualStudio;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.Design;
 using System.IO;
+using System.Linq;
+using static Outstance.VsShellContext.Constants;
 
 namespace Outstance.VsShellContext
 {
@@ -31,9 +32,9 @@ namespace Outstance.VsShellContext
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         public ShellContextCommand(
-            OleMenuCommandService commandSvc, 
+            OleMenuCommandService commandSvc,
             IVsMonitorSelection selectionSvc,
-            EnvDTE.DTE dteSvc)
+            DTE dteSvc)
         {
             this.selectionSvc = selectionSvc ?? throw new ArgumentNullException(nameof(selectionSvc));
             this.dteSvc = dteSvc ?? throw new ArgumentNullException(nameof(dteSvc));
@@ -61,14 +62,14 @@ namespace Outstance.VsShellContext
         {
             try
             {
-                var files = GetSelectedFiles();
+                var files = GetSelectedFiles().ToList();
 
                 OutputWindow.Log(string.Join(",", files));
                 using (var c = new ShellContextMenu())
                 {
-                    var selectedItems = files.Select(f => 
-                        Directory.Exists(f) 
-                        ? new DirectoryInfo(f) 
+                    var selectedItems = files.Select(f =>
+                        Directory.Exists(f)
+                        ? new DirectoryInfo(f)
                         : new FileInfo(f) as FileSystemInfo);
                     c.ShowContextMenu(selectedItems, System.Windows.Forms.Cursor.Position);
                 }
@@ -136,36 +137,33 @@ namespace Outstance.VsShellContext
         /// </summary>
         private IEnumerable<string> PopulateFileNamesFromSolutionExplorer()
         {
-            var uiH = (EnvDTE.UIHierarchy)this.dteSvc.Windows?.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer)?.Object;
+            var uiH = (UIHierarchy)this.dteSvc.Windows?.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer)?.Object;
             var selItems = uiH?.SelectedItems as Array;
 
-            foreach (var hierarchyItem in selItems.Cast<EnvDTE.UIHierarchyItem>())
+            foreach (var hierarchyItem in selItems.Cast<UIHierarchyItem>())
             {
                 // Top-level project. See below for projects in folders.
-                if (hierarchyItem.Object is EnvDTE.Project project)
+                if (hierarchyItem.Object is Project project)
                 {
                     yield return project.FullName;
-                    continue;
                 }
-
-                if (hierarchyItem.Object is EnvDTE.ProjectItem projectItem)
+                else if (hierarchyItem.Object is ProjectItem projectItem)
                 {
-                    if (projectItem.Object is EnvDTE.Project p)
+                    if (projectItem.Object is Project innerProject)
                     {
-                        // Somehow, projects inside a Solution Folder (i.e. "virtual" folder) 
+                        // Projects inside a Solution Folder (i.e. "virtual" folder) 
                         // sometimes get wrapped inside another project item. 
                         // At least they were in VS2015, but not reproducible in 2019.
-                        yield return p.FullName;
+                        yield return innerProject.FullName;
                     }
                     else if (projectItem.Kind == EnvDTE.Constants.vsProjectItemKindSolutionItems)
                     {
-                        // Normal files inside a solution folder is of a special "Kind", 
-                        // and doesn't have path information, but they should be in the
-                        // top-level Solution folder itself.
+                        // Files inside a solution folder is of a special "Kind", and doesn't have path information.
+                        // SMELL: Force top-level directory (where most of them usually are), as I couldn't 
+                        // find a way to dig up the path (at least not when testing onn VS2019).
                         var slnDir = Path.GetDirectoryName(this.dteSvc.Solution.Properties.Item("Path")?.Value?.ToString());
-                        if (slnDir is null)
-                            continue;
-                        yield return Path.Combine(slnDir, projectItem.Name);
+                        if (slnDir != null)
+                            yield return Path.Combine(slnDir, projectItem.Name);
                     }
                     else
                     {
