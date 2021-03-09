@@ -156,20 +156,11 @@ namespace Outstance.VsShellContext
                         // At least they were in VS2015, but not reproducible in 2019.
                         yield return innerProject.FullName;
                     }
-                    else if (projectItem.Kind == EnvDTE.Constants.vsProjectItemKindSolutionItems)
-                    {
-                        // Files inside a solution folder is of a special "Kind", and doesn't have path information.
-                        // SMELL: Force top-level directory (where most of them usually are), as I couldn't 
-                        // find a way to dig up the path (at least not when testing onn VS2019).
-                        var slnDir = Path.GetDirectoryName(this.dteSvc.Solution.Properties.Item("Path")?.Value?.ToString());
-                        if (slnDir != null)
-                            yield return Path.Combine(slnDir, projectItem.Name);
-                    }
                     else
                     {
                         // Oh look, a normal file! (or something else completely unknown, 
                         // but hopefully it would throw the appropriate exception)
-                        yield return projectItem.Properties.Item("FullPath")?.Value?.ToString();
+                        yield return projectItem.FileNames[1];
                     }
                 }
             }
