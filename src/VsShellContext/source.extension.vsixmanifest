@@ -3,7 +3,7 @@
   <Metadata>
     <Identity
       Id="VsShellContextMenu.985f5dc4-11c5-497e-bd9d-a84a2ddc7816"
-      Version="2.0"
+      Version="2.1"
       Language="en-US"
       Publisher="Nanang Prasetyo"
      />
@@ -15,13 +15,24 @@
     <Preview>true</Preview>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.IntegratedShell" Version="[11.0, 17.0)" />
+    <!-- 8.0  Visual Studio 2005
+         9.0  Visual Studio 2008
+         10.0 Visual Studio 2010
+         11.0 Visual Studio 2012
+         12.0 Visual Studio 2013
+         14.0 Visual Studio 2015
+         15.0 Visual Studio 2017
+         16.0 Visual Studio 2019
+         17.0 Visual Studio 2022
+    -->
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,14.0)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
   </Dependencies>
   <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[11.0,17.0)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[11.0,)" DisplayName="Visual Studio core editor" />
   </Prerequisites>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
