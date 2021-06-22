@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
+    <!-- Note before publishing:
+         - Change Id to contain only the GUID.
+         - Change Preview to false.
+         - Don't forget to bump version.
+    -->
     <Identity
       Id="VsShellContextMenu.985f5dc4-11c5-497e-bd9d-a84a2ddc7816"
       Version="2.1"
