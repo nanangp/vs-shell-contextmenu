@@ -11,6 +11,8 @@ namespace Outstance.VsShellContext
 
         public static void Log(object toWrite, bool openWindow = false)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (toWrite == null)
                 return;
             if (_outWindow == null)

@@ -202,3 +202,6 @@ dotnet_naming_style.begins_with_i.capitalization = pascal_case
 
 # Default severity for analyzer diagnostics with category 'Style'
 dotnet_analyzer_diagnostic.category-Style.severity = silent
+
+# VSTHRD010: Invoke single-threaded types on Main thread
+dotnet_diagnostic.VSTHRD010.severity = silent

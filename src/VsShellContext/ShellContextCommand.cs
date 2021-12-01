@@ -77,6 +77,8 @@ namespace Outstance.VsShellContext
         /// </summary>
         private void Execute(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            
             try
             {
                 var files = GetSelectedFiles().ToList();
