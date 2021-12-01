@@ -8,7 +8,7 @@
     -->
     <Identity
       Id="VsShellContextMenu.985f5dc4-11c5-497e-bd9d-a84a2ddc7816"
-      Version="2.1"
+      Version="2.2"
       Language="en-US"
       Publisher="Nanang Prasetyo"
      />
@@ -29,14 +29,13 @@
          15.0 Visual Studio 2017
          16.0 Visual Studio 2019
          17.0 Visual Studio 2022
-        -->
+    -->
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)" />
-    <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community">
+    <InstallationTarget Version="[17.0,)" Id="Microsoft.VisualStudio.Community">
       <ProductArchitecture>amd64</ProductArchitecture>
     </InstallationTarget>
   </Installation>
   <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
   </Dependencies>
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[11.0,)" DisplayName="Visual Studio core editor" />

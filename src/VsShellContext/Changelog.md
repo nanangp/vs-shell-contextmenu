@@ -1,5 +1,20 @@
 ﻿# Changelog
 
+## Version 2.2
+
+New:
+* Supports VS2017 to VS2022.
+* Dropped support for VS2015/14.0 and below. Sorry :(
+
+Notes:
+* You will see the 64-bit context menu on VS2022,
+  but only the 32-bit menu on earlier VS versions.
+
+## Version 2.1
+
+New:
+* Extra places where the menu item is shown: Tabs, Folders, Solution items, JSON editors.
+
 ## Version 2.0
 
 New:
