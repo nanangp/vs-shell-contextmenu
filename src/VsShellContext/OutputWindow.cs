@@ -25,5 +25,10 @@ namespace Outstance.VsShellContext
             if (openWindow)
                 pane.Activate();
         }
+
+        public static void LogException(Exception ex)
+        {
+            Log($"Error: {ex?.GetType()}:{ex?.Message}\r\n{ex?.StackTrace}", true);
+        }
     }
 }

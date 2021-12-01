@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
+using Task = System.Threading.Tasks.Task;
+using Microsoft.VisualStudio.Threading;
 using static Outstance.VsShellContext.Constants;
 
 namespace Outstance.VsShellContext
@@ -23,34 +25,49 @@ namespace Outstance.VsShellContext
         /// </summary>
         public static readonly Guid CommandSet = new Guid("a799b2b9-9c74-404e-a504-53ed1caf2e61");
 
-
         private readonly IVsMonitorSelection selectionSvc;
-        private readonly EnvDTE.DTE dteSvc;
+        private readonly EnvDTE80.DTE2 dteSvc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellContextCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
-        public ShellContextCommand(
+        private ShellContextCommand(
             OleMenuCommandService commandSvc,
             IVsMonitorSelection selectionSvc,
-            DTE dteSvc)
+            EnvDTE80.DTE2 dteSvc)
         {
-            this.selectionSvc = selectionSvc ?? throw new ArgumentNullException(nameof(selectionSvc));
-            this.dteSvc = dteSvc ?? throw new ArgumentNullException(nameof(dteSvc));
-            commandSvc = commandSvc ?? throw new ArgumentNullException(nameof(commandSvc));
+            try
+            {
+                this.selectionSvc = selectionSvc ?? throw new ArgumentNullException(nameof(IVsMonitorSelection));
+                this.dteSvc = dteSvc ?? throw new ArgumentNullException(nameof(DTE));
+                commandSvc = commandSvc ?? throw new ArgumentNullException(nameof(IMenuCommandService));
 
-            var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(this.Execute, menuCommandID);
-            commandSvc.AddCommand(menuItem);
+                var menuCommandID = new CommandID(CommandSet, CommandId);
+                var menuItem = new MenuCommand(this.Execute, menuCommandID);
 
+                //if (commandSvc.FindCommand(menuCommandID) is null)
+                commandSvc.AddCommand(menuItem);
+            }
+            catch(Exception ex)
+            {
+                OutputWindow.LogException(ex);
+                throw;
+            }
         }
 
         /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
-        public static void Initialize(Package _)
+        public static async Task InitializeAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider provider)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var dteSvc = await provider.GetServiceAsync(typeof(SDTE)) as EnvDTE80.DTE2;
+            var commandSvc = await provider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var selectionSvc = await provider.GetServiceAsync(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
+
+            new ShellContextCommand(commandSvc, selectionSvc, dteSvc);
         }
 
         /// <summary>
@@ -63,8 +80,11 @@ namespace Outstance.VsShellContext
             try
             {
                 var files = GetSelectedFiles().ToList();
+#if DEBUG
+                OutputWindow.Log("Selected:");
+                OutputWindow.Log(string.Join(Environment.NewLine, files));
+#endif
 
-                OutputWindow.Log(string.Join(",", files));
                 using (var c = new ShellContextMenu())
                 {
                     var selectedItems = files.Select(f =>
@@ -76,7 +96,7 @@ namespace Outstance.VsShellContext
             }
             catch (Exception ex)
             {
-                OutputWindow.Log($"Error: {ex.Message}\r\n{ex.StackTrace}", true);
+                OutputWindow.LogException(ex);
             }
         }
 

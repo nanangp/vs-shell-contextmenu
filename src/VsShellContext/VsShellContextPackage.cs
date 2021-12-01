@@ -2,8 +2,10 @@
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace Outstance.VsShellContext
 {
@@ -24,10 +26,10 @@ namespace Outstance.VsShellContext
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(VsShellContextPackage.PackageGuidString)]
-    public sealed class VsShellContextPackage : Package
+    public sealed class VsShellContextPackage : AsyncPackage
     {
         /// <summary>
         /// VsShellContextPackage GUID string.
@@ -41,15 +43,10 @@ namespace Outstance.VsShellContext
         /// <param name="cancellationToken">A cancellation token to monitor for initialization cancellation, which can occur when VS is shutting down.</param>
         /// <param name="progress">A provider for progress updates.</param>
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
-
-            var dteSvc = GetService(typeof(SDTE)) as EnvDTE.DTE;
-            var commandSvc = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            var selectionSvc = GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
-
-            new ShellContextCommand(commandSvc, selectionSvc, dteSvc);
+            await base.InitializeAsync(cancellationToken, progress);
+            await ShellContextCommand.InitializeAsync(this);
         }
     }
 }

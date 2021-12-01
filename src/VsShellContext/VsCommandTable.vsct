@@ -30,65 +30,15 @@
     called "command set" and is used to group different command inside a logically related  
     group; your package should define its own command set in order to avoid collisions  
     with command ids defined by other packages. -->
-    
+
     <!-- In this section you can define new menu groups. A menu group is a container for 
          other menus or buttons (commands); from a visual point of view you can see the 
          group as the part of a menu contained between two lines. The parent of a group 
          must be a menu. -->
     <Groups>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_BASIC" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_HTML" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_SCRIPT" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASPX" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASAX" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASPX_CODE" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASAX_CODE" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASMX_CODE" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="CssEditorWindows" id="IDMX_HTM_SOURCE_CSS" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="XamlEditorWindows" id="IDMX_XAML_SOURCE_BASIC" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="CshtmlEditorWindows" id="IDM_HTMLCTXMENU" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="JSONEditorContextMenu" id="IDJSONEditorContextMenu" />
-      </Group>
-      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
-      </Group>
+      <Group guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001" />
     </Groups>
-    
+
     <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button 
         or combo box in a toolbar. -->
@@ -110,12 +60,11 @@
         </Strings>
       </Button>
     </Buttons>
-   
+
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
       <Bitmap guid="guidIcon" href="Resources\Icon.ico" />
     </Bitmaps>
-
   </Commands>
 
   <!-- Binds command to shortcut key -->
@@ -123,10 +72,78 @@
     <KeyBinding guid="guidVsShellContextCmdSet" id="cmdShellContextMenu" editor="guidVSStd97" mod1="Control" key1="e" mod2="Control" key2="x" />
   </KeyBindings>
 
+  <CommandPlacements>
+    <!--Solution Explorer nodes-->
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="guidSHLMainMenu" id ="IDM_VS_CTXT_PROJNODE"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="guidSHLMainMenu" id ="IDM_VS_CTXT_ITEMNODE"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="guidSHLMainMenu" id ="IDM_VS_CTXT_FOLDERNODE"/>
+    </CommandPlacement>
+
+    <!--Document tabs-->
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="guidSHLMainMenu" id ="IDM_VS_CTXT_EZDOCWINTAB"/>
+    </CommandPlacement>
+
+    <!--Code editor windows-->
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="guidSHLMainMenu" id ="IDM_VS_CTXT_CODEWIN"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_BASIC" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_HTML" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_SCRIPT" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASPX" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASAX" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASPX_CODE" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASAX_CODE" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="HtmlEditorWindows" id="IDMX_HTM_SOURCE_ASMX_CODE" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="XamlEditorWindows" id="IDMX_XAML_SOURCE_BASIC" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="CshtmlEditorWindows" id="IDM_HTMLCTXMENU" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="CssEditor1" id="IDM_CTX_SOURCE" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="CssEditor2" id="IDMX_CSS_SOURCE" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="CssEditor3" id="IDMX_HTM_SOURCE_CSS" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="JSONEditorContextMenu" id ="IDJSONEditorContextMenu1"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidVsShellContextCmdSet" id="MyMenuGroup" priority="0x0001">
+      <Parent guid="JSONEditorContextMenu" id ="IDJSONEditorContextMenu3"/>
+    </CommandPlacement>
+  </CommandPlacements>
+  
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidVsShellContextPkg" value="{985f5dc4-11c5-497e-bd9d-a84a2ddc7816}" />
-    
+
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidVsShellContextCmdSet" value="{a799b2b9-9c74-404e-a504-53ed1caf2e61}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
@@ -139,16 +156,13 @@
       <IDSymbol name="IDMX_HTM_SOURCE_HTML" value="0x33" />
       <IDSymbol name="IDMX_HTM_SOURCE_SCRIPT" value="0x34" />
       <IDSymbol name="IDMX_HTM_SOURCE_ASPX" value="0x35" />
-      <IDSymbol name="IDMX_HTM_SOURCE_ASAX" value="0x3B" />
       <IDSymbol name="IDMX_HTM_SOURCE_ASPX_CODE" value="0x36" />
-      <IDSymbol name="IDMX_HTM_SOURCE_ASAX_CODE" value="0x3C" />
       <IDSymbol name="IDMX_HTM_SOURCE_ASPX_CODE_VB" value="0x37" />
-      <IDSymbol name="IDMX_HTM_SOURCE_ASAX_CODE_VB" value="0x3D" />
       <IDSymbol name="IDMX_HTM_SOURCE_ASMX_CODE" value="0x38" />
       <IDSymbol name="IDMX_HTM_SOURCE_ASMX_CODE_VB" value="0x39" />
-    </GuidSymbol>
-    <GuidSymbol name="CssEditorWindows" value="{A764E896-518D-11D2-9A89-00C04F79EFC3}">
-      <IDSymbol name="IDMX_HTM_SOURCE_CSS" value="0x0102"/>
+      <IDSymbol name="IDMX_HTM_SOURCE_ASAX" value="0x3B" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASAX_CODE" value="0x3C" />
+      <IDSymbol name="IDMX_HTM_SOURCE_ASAX_CODE_VB" value="0x3D" />
     </GuidSymbol>
     <GuidSymbol name="XamlEditorWindows" value="{4C87B692-1202-46AA-B64C-EF01FAEC53DA}">
       <IDSymbol name="IDMX_XAML_SOURCE_BASIC" value="0x0103"/>
@@ -156,15 +170,25 @@
     <GuidSymbol name="CshtmlEditorWindows" value="{78F03954-2FB8-4087-8CE7-59D71710B3BB}">
       <IDSymbol name="IDM_HTMLCTXMENU" value="0x0001"/>
     </GuidSymbol>
-    <GuidSymbol name="JSONEditorContextMenu" value="{F718CA06-CF4F-4A0C-9106-E79E9EE5E7CD}">
-      <IDSymbol name="IDJSONEditorContextMenu" value="0x03" />
+    <GuidSymbol name="CssEditor1" value="{A764E896-518D-11D2-9A89-00C04F79EFC3}">
+      <IDSymbol name="IDM_CTX_SOURCE" value="0x0102"/>
     </GuidSymbol>
-    
+    <GuidSymbol name="CssEditor2" value="{64DA400E-B4AD-4D67-AA92-4B7ACB01ECD5}">
+      <IDSymbol name="IDMX_CSS_SOURCE" value="0x02" />
+    </GuidSymbol>
+    <GuidSymbol name="CssEditor3" value="{0F070E29-DCCD-4F83-8329-C3D4B29474AE}">
+      <IDSymbol name="IDMX_HTM_SOURCE_CSS" value="0x0102"/>
+    </GuidSymbol>
+    <GuidSymbol name="JSONEditorContextMenu" value="{F718CA06-CF4F-4A0C-9106-E79E9EE5E7CD}">
+      <IDSymbol name="IDJSONEditorContextMenu1" value="0x01" />
+      <IDSymbol name="IDJSONEditorContextMenu3" value="0x03" />
+    </GuidSymbol>
+
     <!-- Guid for the icons -->
     <GuidSymbol name="guidIcon" value="{96386C5C-C048-4477-86F2-F5050B38DAAD}">
       <IDSymbol name="main" value="1" />
     </GuidSymbol>
-    
+
   </Symbols>
 
 </CommandTable>
