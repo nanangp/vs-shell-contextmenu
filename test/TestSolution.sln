@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31903.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsApp1", "WinFormsApp1\WinFormsApp1.csproj", "{8627150C-79C5-473F-ABB7-0B026707A7E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VirtualSolutionFolder", "VirtualSolutionFolder", "{0D28CB09-6557-4654-8284-13A8BC03C9D3}"
+	ProjectSection(SolutionItems) = preProject
+		TestFolder\Test1.txt = TestFolder\Test1.txt
+		TestFolder\Test2.md = TestFolder\Test2.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8627150C-79C5-473F-ABB7-0B026707A7E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8627150C-79C5-473F-ABB7-0B026707A7E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8627150C-79C5-473F-ABB7-0B026707A7E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8627150C-79C5-473F-ABB7-0B026707A7E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B175043-BFBD-4FE9-9B57-2E5CBFA54F12}
+	EndGlobalSection
+EndGlobal
